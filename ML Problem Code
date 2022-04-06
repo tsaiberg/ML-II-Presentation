@@ -1,0 +1,100 @@
+# This problem involves the OJ data set which is part of the ISLR2
+# package.
+rm(list = ls())
+library(ISLR2)
+library(e1071)
+data("OJ")
+attach(OJ)
+set.seed(1)
+
+
+# (a) Create a training set containing a random sample of 800
+# observations, and a test set containing the remaining
+# observations.
+trainIndex <- sample(nrow(OJ), 800)
+train <- OJ[trainIndex,]
+test <- OJ[-trainIndex,]
+#dat <- data.frame(x = test, y = as.factor(train))
+
+
+# (b) Fit a support vector classifier to the training data using
+# cost = 0.01, with Purchase as the response and the other variables as predictors. Use the summary() function 
+# to produce summary statistics, and describe the results obtained.
+svmfit <- svm(Purchase~., data = train, cost = 0.01, kernel = "linear", scale = FALSE)
+summary(svmfit)
+
+
+# (c) What are the training and test error rates?
+ypred.test <- predict(svmfit, test)
+table(predict = ypred.test, truth = test$Purchase)
+(33+15)/(153+33+15+69)
+
+ypred.train <- predict(svmfit, train)
+table(predict = ypred.train, truth = train$Purchase)
+(75+65)/(420+75+65+240)
+
+# (d) Use the tune() function to select an optimal cost. Consider values in the range 0.01 to 10.
+tune.out <- tune(svm, Purchase~., data = train, kernel= "linear", ranges = list(cost = c(0.01, 0.1, 1, 5, 10)))
+summary(tune.out)
+bestmod <- tune.out$best.model
+summary(bestmod)
+
+# (e) Compute the training and test error rates using this new value
+# for cost.
+ypred.test <- predict(bestmod, test)
+table(predict = ypred.test, truth = test$Purchase)
+
+ypred.train <- predict(bestmod, train)
+table(predict = ypred.train, truth = train$Purchase)
+
+
+# (f) Repeat parts (b) through (e) using a support vector machine
+# with a radial kernel. Use the default value for gamma.
+
+svmfit <- svm(Purchase~., data = train, gamma = 1, kernel = "radial")
+summary(svmfit)
+
+ypred.test <- predict(svmfit, test)
+table(predict = ypred.test, truth = test$Purchase)
+
+ypred.train <- predict(svmfit, train)
+table(predict = ypred.train, truth = train$Purchase)
+
+tune.out <- tune(svm, Purchase~., data = train, kernel= "radial", ranges = list(cost = c(0.01, 0.1, 1, 5, 10)))
+summary(tune.out)
+bestmod <- tune.out$best.model
+summary(bestmod)
+
+ypred.test <- predict(bestmod, test)
+table(predict = ypred.test, truth = test$Purchase)
+
+ypred.train <- predict(bestmod, train)
+table(predict = ypred.train, truth = train$Purchase)
+
+# (g) Repeat parts (b) through (e) using a support vector machine
+# with a polynomial kernel. Set degree = 2.
+svmfit <- svm(Purchase~., data = train, kernel = "polynomial", degree = 2)
+summary(svmfit)
+
+
+ypred.test <- predict(svmfit, test)
+table(predict = ypred.test, truth = test$Purchase)
+
+ypred.train <- predict(svmfit, train)
+table(predict = ypred.train, truth = train$Purchase)
+
+tune.out <- tune(svm, Purchase~., data = train, kernel= "polynomial", degree = 2, ranges = list(cost = c(0.01, 0.1, 1, 5, 10)))
+summary(tune.out)
+bestmod <- tune.out$best.model
+summary(bestmod)
+
+ypred.test <- predict(bestmod, test)
+table(predict = ypred.test, truth = test$Purchase)
+
+
+ypred.train <- predict(bestmod, train)
+table(predict = ypred.train, truth = train$Purchase)
+
+# (h) Overall, which approach seems to give the best results on this
+# data?
+
