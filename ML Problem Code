@@ -27,11 +27,13 @@ summary(svmfit)
 # (c) What are the training and test error rates?
 ypred.test <- predict(svmfit, test)
 table(predict = ypred.test, truth = test$Purchase)
-(33+15)/(153+33+15+69)
+(43+20)/(148+43+20+59)
+# 23.33%
 
 ypred.train <- predict(svmfit, train)
 table(predict = ypred.train, truth = train$Purchase)
-(75+65)/(420+75+65+240)
+(105+65)/(420+105+65+210)
+# 21.25%
 
 # (d) Use the tune() function to select an optimal cost. Consider values in the range 0.01 to 10.
 tune.out <- tune(svm, Purchase~., data = train, kernel= "linear", ranges = list(cost = c(0.01, 0.1, 1, 5, 10)))
@@ -43,10 +45,13 @@ summary(bestmod)
 # for cost.
 ypred.test <- predict(bestmod, test)
 table(predict = ypred.test, truth = test$Purchase)
+(28+12)/(156+28+12+74)
+# 14.81%
 
 ypred.train <- predict(bestmod, train)
 table(predict = ypred.train, truth = train$Purchase)
-
+(69+62)/(423+69+62+246)
+# 16.38%
 
 # (f) Repeat parts (b) through (e) using a support vector machine
 # with a radial kernel. Use the default value for gamma.
@@ -56,20 +61,30 @@ summary(svmfit)
 
 ypred.test <- predict(svmfit, test)
 table(predict = ypred.test, truth = test$Purchase)
+(38+13)/(155+38+13+64)
+# 18.89%
 
 ypred.train <- predict(svmfit, train)
 table(predict = ypred.train, truth = train$Purchase)
+(60+34)/(451+60+34+255)
+# 11.75%
 
+# Tune:
 tune.out <- tune(svm, Purchase~., data = train, kernel= "radial", ranges = list(cost = c(0.01, 0.1, 1, 5, 10)))
 summary(tune.out)
 bestmod <- tune.out$best.model
 summary(bestmod)
 
+# New error rates:
 ypred.test <- predict(bestmod, test)
 table(predict = ypred.test, truth = test$Purchase)
+(33+17)/(151+33+17+69)
+# 18.52%
 
 ypred.train <- predict(bestmod, train)
 table(predict = ypred.train, truth = train$Purchase)
+(77+44)/(441+77+44+238)
+# 15.13%
 
 # (g) Repeat parts (b) through (e) using a support vector machine
 # with a polynomial kernel. Set degree = 2.
@@ -79,22 +94,36 @@ summary(svmfit)
 
 ypred.test <- predict(svmfit, test)
 table(predict = ypred.test, truth = test$Purchase)
+(45+15)/(153+45+15+57)
+# 22.22%
 
 ypred.train <- predict(svmfit, train)
 table(predict = ypred.train, truth = train$Purchase)
+(110+36)/(449+110+36+205)
+# 18.25%
 
+# Tune:
 tune.out <- tune(svm, Purchase~., data = train, kernel= "polynomial", degree = 2, ranges = list(cost = c(0.01, 0.1, 1, 5, 10)))
 summary(tune.out)
 bestmod <- tune.out$best.model
 summary(bestmod)
 
+# Error rates:
 ypred.test <- predict(bestmod, test)
 table(predict = ypred.test, truth = test$Purchase)
-
+(37+14)/(154+37+14+65)
+# 18.89%
 
 ypred.train <- predict(bestmod, train)
 table(predict = ypred.train, truth = train$Purchase)
+(82+38)/(447+82+38+233)
+# 15.00%
 
 # (h) Overall, which approach seems to give the best results on this
 # data?
 
+# Linear: 14.81% & 16.38%
+# Radial: 18.52% & 15.13%
+# Poly:   18.89% & 15.00%
+
+# Using the linear kernel appears to yield the best result!
